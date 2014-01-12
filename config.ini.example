@@ -1,0 +1,51 @@
+; site
+[site]
+viewPath='web_test/view/'
+autoloaderPaths[] ='web_test/model/'
+autoloaderPaths[] ='web_test/Smarty-3.1.13/libs/'
+controllerPath[]='web_test/controller/'
+controllerPath[]='web_test/controller2/'
+pluginPath='web_test/plugin/'
+errorTakeOver=1
+debug=0
+timezone= 'UTC' ;http://www.php.net/manual/en/timezones.php
+tempDir=relativePathTo/my/temp/dir/
+
+; database
+[db]
+host=localhost
+user=admin
+password=
+database=test_core
+
+; for extra db mappings...
+[db_2]
+host=localhost
+user=admin2
+password=
+database=test_core2
+
+
+
+[plugins]
+startup[] = 'Plugin404';
+
+[other]
+
+[template]
+engine=smarty
+
+[smarty]
+compileDir='tmp/smarty_compile/'
+cacheDir='tmp/smarty_cache/'
+;configDir
+
+[error]
+;email[] = 'bob@nowhere.com'
+
+[mongo]
+server='mongodb://localhost:27017'
+database='mymongodb'
+
+[rewrite]
+orig='new'

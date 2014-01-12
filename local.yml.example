@@ -1,0 +1,5 @@
+site:
+ debug: 1
+
+rewrite:
+ - {target: "{http://www.schoolelement.com/}", replace: "{/}"}

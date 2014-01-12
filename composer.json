@@ -1,0 +1,12 @@
+{
+    "name": "stratease/emvc",
+    "version": "0.1.1",
+    "dist": {
+        "url": "git://github.com/stratease/emvc.git",
+        "type": "vcs"
+    },
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/stratease/emvc.git"
+	}
+}
