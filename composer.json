@@ -1,5 +1,8 @@
 {
     "name": "stratease/emvc",
     "authors": [{"name":"Edwin Daniels"}],
+	"require":{
+		"nesbot/Carbon": "*"
+	},
     "version": "0.1.1"
 }
