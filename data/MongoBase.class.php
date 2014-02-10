@@ -418,7 +418,7 @@ abstract class MongoBase extends MongoCollection
 			// do a normal mongo remove
 			$response = parent::remove($criteria, $options);
 		}
-		else if($this->isLoaded)
+		else if($this->get('_id') !== null)
 		{
 			foreach($this->onBeforeRemove as $func)
 			{
@@ -437,8 +437,7 @@ abstract class MongoBase extends MongoCollection
 			$this->schemaValues[$this->registry] = array();
 			$this->schemaUnset[$this->registry] = array();
 			$this->changed[$this->registry] = array();
-			$this->registry = null;
-			$this->isLoaded = false;
+			$this->clear();
 		}
 		return $success;
 	}

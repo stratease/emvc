@@ -2,10 +2,12 @@
 class MongoPager
 {
 	public $viewableRange = 4;
+	private $totalCount = 0;
 	function __construct($site, $obj)
 	{
 		$this->site = $site;
 		$this->obj = $obj;
+		$this->totalCount = $this->obj->count();
 	}
 	public function page($curPage, $totalCount, $pageSize = 10)
 	{
@@ -13,6 +15,14 @@ class MongoPager
 		$this->currentPage = $curPage;
 		$this->pageSize = $pageSize;
 		return $this->obj->skip(($pageSize * ($curPage - 1)))->limit($pageSize);
+	}
+	public function currentCount()
+	{
+		return count(iterator_to_array($this->obj));
+	}
+	public function totalCount()
+	{
+		return $this->totalCount;
 	}
 	public function pagesInRange()
 	{

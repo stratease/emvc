@@ -173,7 +173,7 @@ trait UserBase
 		else
 			$regex = '/.{8}/'; // default
 		// if we didnt match, it's an invalid password
-		if(!preg_match($regex, $password))
+		if(preg_match($regex, $password) == false)
 		{
 			if($this->invalidPasswordMessage === '')
 				$this->errorMsg .= "Invalid password. Minimum of 8 characters required.\n";
@@ -192,19 +192,19 @@ trait UserBase
 		if($this->emailFieldName !== '')
 		{
 			$emailFieldName = $this->emailFieldName;
-			if($this->isValidEmail($this->$emailFieldName, $checkDb) === false)
+			if($this->isValidEmail($this->get($emailFieldName), $checkDb) === false)
 			{
 				$this->failedFields[] = $emailFieldName;
 				$bool = false;
 			}
 			$checkDb = false;
 		}
-		if($this->isValidPassword($this->$passwordField) === false)
+		if($this->isValidPassword($this->get($passwordField)) === false)
 		{
 			$this->failedFields[] = $passwordField;
 			$bool = false;
 		}
-		if($this->isValidUsername($this->$usernameField, $checkDb) === false)
+		if($this->isValidUsername($this->get($usernameField), $checkDb) === false)
 		{
 			$this->failedFields[] = $usernameField;
 			$bool = false;
