@@ -68,7 +68,7 @@ abstract class UserMongoBase extends MongoBase implements MongoUserInterface
 	/**
 	 * Database authentication search for a particular user/pw combo.
 	 */
-	protected function findUser($user, $pw = null)
+	public function findUser($user, $pw = null)
 	{
 		// user/pw required
 		$search = array($this->getLoginField() => array('$regex' => '^'.$user.'$', '$options' => 'i'));
