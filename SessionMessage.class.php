@@ -27,9 +27,13 @@ class SessionMessage implements Iterator
 		{
 			$this->$f = $v;
 		}
-		if(!isset($_SESSION[$this->session_name]))
+		if(session_id() === '') {
+			session_start();
+		}
+		if(isset($_SESSION[$this->session_name]) === false
+			|| is_array($_SESSION[$this->session_name]) === false)
 		{
-			$_SESSION[$this->session_name] = array();
+			$_SESSION[$this->session_name] = [];
 		}
 		if (!empty($_SESSION[$this->session_name]))
 		{
@@ -145,14 +149,14 @@ class SessionMessage implements Iterator
 	public function getByLevel($level, $keepMessages = false)
 	{
 		$return = array();
-		foreach($this->queue as $num => $message)
+		foreach($_SESSION[$this->session_name] as $num => $message)
 		{
 			if ($message->level === $level)
 			{
 				$return[] = $message;
-				if ($keepMessages)
+				if ($keepMessages === false)
 				{
-					unset($this->queue[$num]);
+					unset($_SESSION[$this->session_name][$num]);
 				}
 			}
 		}

@@ -23,7 +23,7 @@ class PageUtil
 		}
 		return $this;
 	}
-	public function setURL($path)
+	public function setURL($path, $keepQuery = true)
 	{
 		$parsed = parse_url($path);
 		if(isset($parsed['scheme']))
@@ -45,9 +45,12 @@ class PageUtil
 		{
 			$this->_path = $parsed['path'];
 		}
-		if(!empty($parsed['query']))
+		if($keepQuery === true
+			&& !empty($parsed['query']))
 		{
 			$this->addQuery($parsed['query']);
+		} else {
+			$this->_get = [];
 		}
 	}
 	/*
