@@ -363,8 +363,10 @@ abstract class MongoBase extends MongoCollection
 				$this->site->error->toss($response['err'], E_USER_WARNING);
 			}
 		}
+
 		if($success)
 		{
+			$this->isLoaded = true;
 			$this->_set('_id', $this->schemaValues[$this->registry]['_id']);
 			$this->moveRegistry($this->get('_id')->__toString());
 
@@ -372,7 +374,7 @@ abstract class MongoBase extends MongoCollection
 			{
 				$this->$func();
 			}
-			return $response;
+			return $success;
 		}
 		return false;
 	}

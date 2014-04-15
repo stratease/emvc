@@ -17,6 +17,7 @@ trait UserBase
 	protected $externalAuthorizationType = null;
 	protected $_externalAuthObj = null;
 	protected $saltDepth = 15;
+	protected $_validPassword = true;
 	protected $errorMsg = '';
 	protected $failedFields = array();
 	/**
@@ -109,6 +110,7 @@ trait UserBase
 	}
 	protected function setPassword($value)
 	{
+		$this->_validPassword = $this->isValidPassword($value);
 		return $this->encryptString($value);
 	}
 	/**
@@ -170,8 +172,10 @@ trait UserBase
 			else
 				$regex = '/'.$this->validPasswordRegex.'/';
 		}
-		else
+		else {
 			$regex = '/.{8}/'; // default
+		}
+
 		// if we didnt match, it's an invalid password
 		if(preg_match($regex, $password) == false)
 		{
@@ -199,7 +203,7 @@ trait UserBase
 			}
 			$checkDb = false;
 		}
-		if($this->isValidPassword($this->get($passwordField)) === false)
+		if($this->_validPassword === false)
 		{
 			$this->failedFields[] = $passwordField;
 			$bool = false;
@@ -315,8 +319,9 @@ trait UserBase
 				$this->registerSession(true);
 				return true;
 			}
-			if($this->isValidAccount() === false)
+			if($this->isValidAccount() === false) {
 				$this->errorMsg .= "Your account is locked.\n";
+			}
 			// all else... invalid account, boot 'em!~!!!
 			$this->logOut();
 			return false;
