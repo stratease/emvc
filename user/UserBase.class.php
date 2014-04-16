@@ -248,10 +248,10 @@ trait UserBase
 
 	public function getByAuthenticationKey($key)
 	{
-		if($this->select(array($this->authenticationFieldName => substr($key, 0, 40), $this->primaryKey => substr($key, 40))))
+		if($this->findOne([$this->authenticationFieldName => substr($key, 0, 40)]))
 		{
 			$authField = $this->authenticationFieldName;
-			$this->$authField = mt_rand(); // clear out
+			$this->set($authField, mt_rand()); // clear out
 			return true;
 		}
 		else
@@ -265,12 +265,12 @@ trait UserBase
 		if($this->authenticationFieldName !== '')
 		{
 			$primaryKey = $this->primaryKey;
-			if($this->$primaryKey !== '' && $this->$primaryKey !== null)
+			if($this->get('_id') != '')
 			{
 				$authField = $this->authenticationFieldName;
 				$key = sha1(uniqid('', true)); // 40 char
-				$this->$authField = $key;
-				return $key.$this->$primaryKey;
+				$this->set($authField, $key);
+				return $key.$this->get('_id');
 			}
 			else
 			{
@@ -280,8 +280,8 @@ trait UserBase
 		else
 		{
 			$this->error->toss(__METHOD__." Authentication field must be defined.", E_USER_WARNING);
-			return false;
 		}
+		return false;
 	}
 
 	protected function encryptString($string, $salt = null)
