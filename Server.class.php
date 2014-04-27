@@ -23,9 +23,12 @@ class Server
 				{
 					$host = $_SERVER['HTTP_HOST'];
 				}
-				else
+				else if(isset($_SERVER['SERVER_NAME']))
 				{
 					$host = $_SERVER['SERVER_NAME'];
+				}
+				else {
+					$host = '';
 				}
 				// now split up and grab subdomain if there is one...
 				$hs = explode(".", $host);
