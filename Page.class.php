@@ -179,6 +179,7 @@ class Page
 							}
 							try {
 								$twig = new Twig_Environment($loader, $options);
+								$this->site->event->publish("Twig::Twig_Environment", $twig);
 								echo $twig->render($viewFile, $this->controller->view);
 							}
 							catch(Exception $e)
