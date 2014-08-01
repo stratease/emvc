@@ -405,6 +405,11 @@ abstract class MongoBase extends MongoCollection
 		}
 		return $val;
 	}
+
+	/**
+	* Alias for remove
+	*/
+	public function destroy() { return $this->remove(); }
 	/**
 	 * Removed current object. Skips if nothing is loaded.
 	 *
@@ -643,6 +648,13 @@ abstract class MongoBase extends MongoCollection
 				$this->buildRegistry($query['_id']->__toString());
 				$this->isLoaded = true;
 				return $this->isLoaded;
+			}
+		} else {
+			// any alias?
+			$aliasId = lcfirst(get_class($this)).'Id';
+			if(isset($query[$aliasId])) {
+				$query['_id'] = $query[$aliasId];
+				unset($query[$aliasId]);
 			}
 		}
 		// pass args to where generator
