@@ -295,10 +295,10 @@ trait UserBase
 	}
 
 	public function login($username = null, $password = null, $stayLoggedIn = 604800)
-	{
+	{		
         // attempt auto login via session/cookies
         if($username === null && $password === null)
-        {
+        { 
 			// check if a valid session is set and the user isn't loaded yet
             if($this->isActiveSession() === true
 			   && $this->isLoaded === false)
@@ -341,11 +341,18 @@ trait UserBase
 							$this->update();
 						}
 					}
+					ini_set('session.cookie_lifetime', time() + $stayLoggedIn);
 					if(session_id() === '')
 						session_start();
 					if($this->autoLogin === true)
 					{
-						setcookie(session_name(), session_id(), time() + $stayLoggedIn, '/', $_SERVER['HTTP_HOST']); // TODO fix this... doesn't work in all browsers
+						// just get domain..
+				        if(substr_count($_SERVER['HTTP_HOST'], ".") == 2) {
+				        	$domain = substr($_SERVER['HTTP_HOST'], strpos($_SERVER['HTTP_HOST'], '.') + 1);
+				        } else {
+				        	$domain = $_SERVER['HTTP_HOST'];
+				        }
+						setcookie(session_name(), session_id(), time() + $stayLoggedIn, '/', '.'.$domain); // TODO fix this... doesn't work in all browsers
 					}
 					$this->registerSession(true);
 					return true;
@@ -548,9 +555,24 @@ trait UserBase
 	{
         if(session_id() === '')
             session_start();
-		setcookie(session_name(), session_id(), 1, '/', $_SERVER['HTTP_HOST']);
-		unset($_COOKIE[session_name()]);
+        // clear our values        
 		unset($_SESSION[$this->__CLASS__]);
+	}
+
+	public function obliterateSession()
+	{
+		$this->logOut();
+		// just get domain..
+        if(substr_count($_SERVER['HTTP_HOST'], ".") == 2) {
+        	$domain = substr($_SERVER['HTTP_HOST'], strpos($_SERVER['HTTP_HOST'], '.') + 1);
+        } else {
+        	$domain = $_SERVER['HTTP_HOST'];
+        }
+
+		setcookie(session_name(), session_id(), 1, '/', ".".$domain);
+		session_destroy();
+		// clear our values
+		unset($_COOKIE[session_name()]);
 	}
 
 }

@@ -903,7 +903,18 @@ abstract class MongoBase extends MongoCollection
 		}
 	}
 
+	function __call($func, $args)
+	{
+		// get{Field} ?
+		if(substr($func, 0, 3) === 'get') {
+			$field = lcfirst(substr($func, 3));
 
+			return $this->get($field);
+		}
+
+		throw new \Exception("Uncallable method: ".$func, E_USER_ERROR);
+		return null;
+	}
 	/**
 	 * Builds the object mapping through the magic getters.
 	 * This should not be used directly
@@ -979,6 +990,7 @@ abstract class MongoBase extends MongoCollection
 				}
 			}
 		}
+
 		// not a defined property
 		return null;
 	}

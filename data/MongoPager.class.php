@@ -11,7 +11,9 @@ class MongoPager
 	}
 	public function page($curPage, $totalCount, $pageSize = 10)
 	{
-		$this->numberOfPages = ceil($totalCount / $pageSize);
+		if(!($this->numberOfPages = ceil($totalCount / $pageSize))) {
+			$this->numberOfPages = 1;
+		}
 		$this->currentPage = $curPage;
 		$this->pageSize = $pageSize;
 		return $this->obj->skip(($pageSize * ($curPage - 1)))->limit($pageSize);
@@ -39,7 +41,11 @@ class MongoPager
 		{
 			$max = $this->numberOfPages;
 		}
-		return range($min, $max);
+		if($max > $min) {
+			return range($min, $max);
+		} else {
+			return [$min];
+		}
 	}
 	public function previousPage()
 	{

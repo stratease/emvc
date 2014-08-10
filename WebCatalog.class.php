@@ -29,8 +29,9 @@ class WebCatalog
 		if(isset($_SERVER['HTTP_REFERER']))
 		{
 			$util->setURL($_SERVER['HTTP_REFERER']);
-			if($query !== null)
+			if($query !== null) {
 				$util->addQuery($query);
+			}
 			header("Location: ".(string)$util);
 			return true;
 		}
