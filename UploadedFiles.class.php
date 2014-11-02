@@ -63,6 +63,15 @@ class UploadedFiles implements Iterator
 				}
             }
         }
+        // remove the error 4 (no file uploaded)
+        foreach ($nList as $key => $file) {
+            if(isset($file->meta->upload->error)) {
+                if($file->meta->upload->error == UPLOAD_ERR_NO_FILE) {
+                    unset($nList[$key]);
+                }
+            }
+        }
+
         return $nList;
     }
 

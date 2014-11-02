@@ -17,10 +17,8 @@ class WebCatalog
 	 * MUST BE USED BEFORE ANY OUTPUT
 	 */
 	public function redirect($path)
-	{
-		$util = new PageUtil($this->site);
-		$util->setURL($path);
-		header('Location: '.(string)$util, true, 302);
+	{   
+		header('Location: '.(string)$path, true, 302);
 	}
 
 	public function redirectBack($query = null)
