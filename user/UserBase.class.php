@@ -201,7 +201,6 @@ trait UserBase
 				$this->failedFields[] = $emailFieldName;
 				$bool = false;
 			}
-			$checkDb = false;
 		}
 		if($this->_validPassword === false)
 		{
@@ -213,6 +212,7 @@ trait UserBase
 			$this->failedFields[] = $usernameField;
 			$bool = false;
 		}
+
 		return $bool;
 	}
 	public function getInvalidFields()
