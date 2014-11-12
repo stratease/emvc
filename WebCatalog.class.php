@@ -3,6 +3,7 @@ class WebCatalog
 {
     protected $site = null;
 	public $currentDirectory = null;
+    public $isRedirect = false;
     function __construct($site)
     {
         $this->site = $site;
@@ -17,7 +18,8 @@ class WebCatalog
 	 * MUST BE USED BEFORE ANY OUTPUT
 	 */
 	public function redirect($path)
-	{   
+	{
+        $this->isRedirect = true;
 		header('Location: '.(string)$path, true, 302);
 	}
 
@@ -31,6 +33,7 @@ class WebCatalog
 				$util->addQuery($query);
 			}
 			header("Location: ".(string)$util);
+            $this->isRedirect = true;
 			return true;
 		}
 		return false;

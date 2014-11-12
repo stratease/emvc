@@ -11,6 +11,10 @@ class Response
 
 	private $site;
 	public $mailer;
+    /**
+     * @var bool Flag whether we are sending a json response or not
+     */
+    public $json = false;
 	function __construct($site)
 	{
 		$this->site = $site;
@@ -40,6 +44,7 @@ class Response
 	 */
 	public function sendData($success, $data=null, $msg=null)
 	{
+        $this->json = true;
 		$this->site->page->renderView = false; // json response
 		$out = array('success'=>$success);
 		if ($data !== null)
