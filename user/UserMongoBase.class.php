@@ -33,6 +33,13 @@ abstract class UserMongoBase extends MongoBase implements MongoUserInterface
 		}
 	}
 
+	protected function onLogOn()
+	{
+		if($this->lastLoggedOnField !== '') {
+			$this->set($this->lastLoggedOnField, new MongoDate());
+		}
+		$this->update();
+	}
 	/*
 	 *check if a user is a member of a specific group, by either group name or id. Default is by ID
 	 *@param string $group The designator, either group id or group name
