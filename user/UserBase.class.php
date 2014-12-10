@@ -5,6 +5,7 @@
 trait UserBase
 {
 	protected $autoLogin = true;
+	protected $lastLoggedOnField = '';
 	public $validPasswordRegex = '';
 	protected $emailFieldName = '';
 	protected $authenticationFieldName = '';
@@ -294,6 +295,9 @@ trait UserBase
 		return $salt.sha1($salt.$string);
 	}
 
+	protected function onLogOn()
+	{
+	}
 	public function login($username = null, $password = null, $stayLoggedIn = 604800)
 	{		
         // attempt auto login via session/cookies
@@ -341,6 +345,7 @@ trait UserBase
 							$this->update();
 						}
 					}
+					$this->onLogOn();
 					ini_set('session.cookie_lifetime', time() + $stayLoggedIn);
 					if(session_id() === '')
 						session_start();
