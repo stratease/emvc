@@ -37,4 +37,21 @@ class MongoBaseCursor extends MongoCursor
 		return $object;
 	}
 
+    function getNext()
+    {
+        $row = parent::getNext();
+        // if it's a temp collection, we need to pass the generated name over.
+        if ($this->collectionType == 'MongoTempCollection')
+        {
+            $object = new $this->collectionType($this->site, $collectionName);
+        }
+        else
+        {
+            $object = new $this->collectionType($this->site);
+        }
+        $object->loadRow($row);
+
+        return $object;
+    }
+
 }
