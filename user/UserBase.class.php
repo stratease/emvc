@@ -6,6 +6,7 @@ trait UserBase
 {
 	protected $autoLogin = true;
 	protected $lastLoggedOnField = '';
+    public static $EmailREGEX = '/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i';
 	public $validPasswordRegex = '';
 	protected $emailFieldName = '';
 	protected $authenticationFieldName = '';
@@ -223,7 +224,7 @@ trait UserBase
 	public function isValidEmail($email, $checkDB = false)
     {
         $bool = true;
-		if(!preg_match("/^\S+@\S+\.\S+$/", $email)) // TODO add a more RFC compliant validator...
+		if(!preg_match(self::EmailREGEX, $email)) // TODO add a more RFC compliant validator...
 		{
 			$bool = false;
 		}

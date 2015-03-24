@@ -6,8 +6,9 @@ class Page
 	private $controllerMethod = 'indexAction';
 	private $controller = null;
 	private $site = null;
+    protected static $twigEnvironment;
 
-	function __construct($site, $requestedPath)
+	function __construct($site, $requestedPath = null)
 	{
 		$this->site = $site;
 		$this->requestedPath = $requestedPath;
@@ -26,6 +27,58 @@ class Page
 		include(dirname(__FILE__).'/404.html');
 		exit;
 	}
+
+    /**
+     * @return Twig_Environment
+     */
+    public function getTwigEnvironment()
+    {
+        if(isset(self::$twigEnvironment) === false) {
+            Twig_Autoloader::register();
+            if (is_string($this->site->config('site', 'viewPath'))) {
+                $viewPaths = [$this->site->config('site', 'viewPath')];
+            } else {
+                $viewPaths = $this->site->config('site', 'viewPath');
+            }
+            foreach ($viewPaths as $i => $p) {
+                $viewPaths[$i] = $this->site->appFolder . $p;
+            }
+            if (!($paths = $this->site->config('twig', 'paths')))
+                $paths = $viewPaths;
+            $loader = new Twig_Loader_Filesystem($paths);
+            // get twig options
+            $options = array('strict_variables' => ($this->site->config('site', 'debug')) ? true : false,
+                'debug' => ($this->site->config('site', 'debug')) ? true : false);
+            if ($cacheDir = $this->site->config('twig', 'cacheDir')) {
+                $options['cache'] = $this->site->appFolder . $cacheDir;
+            }
+            if (isset($options['debug']) === false) {
+                $options['debug'] = (bool)$this->site->config('site', 'debug');
+            }
+            if (isset($options['strict_variables']) === false) {
+                $options['strict_variables'] = (bool)$this->site->config('site', 'debug');
+            }
+            if ($this->site->config('twig', 'options')) {
+                $options = array_merge($options, $this->site->config('twig', 'options'));
+            }
+
+
+            self::$twigEnvironment = new Twig_Environment($loader, $options);
+        }
+
+        return self::$twigEnvironment;
+    }
+    /**
+     * @param $template
+     * @param $vars
+     * @return string
+     */
+    public function renderTemplate($template, $vars)
+    {
+        $twig = $this->getTwigEnvironment();
+
+        return $twig->render($template, $vars);
+    }
 	public function render()
 	{
 		// we are rendering now, so this is now the global page
@@ -130,29 +183,13 @@ class Page
                                 }
                                 break;
                             case 'twig':
-                                Twig_Autoloader::register();
-                                if (!($paths = $this->site->config('twig', 'paths')))
-                                    $paths = $viewPaths;
-                                $loader = new Twig_Loader_Filesystem($paths);
-                                // get twig options
-                                $options = array('strict_variables' => ($this->site->config('site', 'debug')) ? true : false,
-                                    'debug' => ($this->site->config('site', 'debug')) ? true : false);
-                                if ($cacheDir = $this->site->config('twig', 'cacheDir')) {
-                                    $options['cache'] = $this->site->appFolder . $cacheDir;
-                                }
-                                if (isset($options['debug']) === false) {
-                                    $options['debug'] = (bool)$this->site->config('site', 'debug');
-                                }
-                                if (isset($options['strict_variables']) === false) {
-                                    $options['strict_variables'] = (bool)$this->site->config('site', 'debug');
-                                }
-                                if ($this->site->config('twig', 'options')) {
-                                    $options = array_merge($options, $this->site->config('twig', 'options'));
-                                }
+
                                 try {
-                                    $twig = new Twig_Environment($loader, $options);
-                                    $this->site->event->publish("Twig::Twig_Environment", $twig);
-                                    echo $twig->render($viewFile, $this->controller->view);
+
+                                    $env = $this->getTwigEnvironment();
+                                    $this->site->event->publish("Twig::Twig_Environment", $env);
+
+                                    echo $this->renderTemplate($viewFile, $this->controller->view);
                                 } catch (Exception $e) {
                                     $this->site->error->toss($e->getMessage(), E_USER_WARNING);
                                     $this->site->event->publish('404');
