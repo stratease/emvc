@@ -224,7 +224,7 @@ trait UserBase
 	public function isValidEmail($email, $checkDB = false)
     {
         $bool = true;
-		if(!preg_match(self::EmailREGEX, $email)) // TODO add a more RFC compliant validator...
+		if(!preg_match(self::$EmailREGEX, $email)) // TODO add a more RFC compliant validator...
 		{
 			$bool = false;
 		}
